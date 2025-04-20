@@ -3,10 +3,11 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime
 import sys
 import os
-from src.check_vars import check_variable_in_range
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-fn = os.path.join(script_dir, '../data/precipitation.nc')
+# Add /opt/airflow/src to the Python path
+sys.path.append('/opt/airflow/src')
+
+from check_vars import check_variable_in_range  # Import from src
 
 default_args = {
     'owner': 'airflow',
@@ -27,8 +28,8 @@ with DAG(
     run_test = PythonOperator(
         task_id='check_variable_in_range',
         op_kwargs={
-            'dataset': 'path_to_your_dataset.nc',  # Replace with actual dataset path
-            'variable_name': 'precipitation',  # Replace with actual variable name
+            'dataset_path': '/opt/airflow/data/precipitation.nc',  # Adjust path to match container structure
+            'variable_name': 'precipitation',
             'min_value': 0,
             'max_value': 500,
         },
